@@ -30,8 +30,11 @@ def contar_usuarios() -> int:
 
 def buscar_usuario_por_email(email: str) -> dict | None:
     sb = get_supabase()
-    res = sb.table("usuarios").select("*").eq("email", email).single().execute()
-    return res.data
+    try:
+        res = sb.table("usuarios").select("*").eq("email", email).maybe_single().execute()
+        return res.data
+    except Exception:
+        return None
 
 
 def criar_usuario(nome: str, email: str, senha_hash: str, nivel: str = "admin") -> dict:
@@ -67,14 +70,20 @@ def listar_produtos(apenas_ativos: bool = True) -> list:
 
 def buscar_produto_por_ean(ean: str) -> dict | None:
     sb = get_supabase()
-    res = sb.table("produtos").select("*, categorias(nome)").eq("ean", ean).maybe_single().execute()
-    return res.data
+    try:
+        res = sb.table("produtos").select("*, categorias(nome)").eq("ean", ean).maybe_single().execute()
+        return res.data
+    except Exception:
+        return None
 
 
 def buscar_produto_por_id(pid: str) -> dict | None:
     sb = get_supabase()
-    res = sb.table("produtos").select("*, categorias(nome)").eq("id", pid).single().execute()
-    return res.data
+    try:
+        res = sb.table("produtos").select("*, categorias(nome)").eq("id", pid).maybe_single().execute()
+        return res.data
+    except Exception:
+        return None
 
 
 def criar_produto(dados: dict) -> dict:
